@@ -162,6 +162,50 @@ Simulates two virtual users (Alice & Bob) asking different questions simultaneou
 
 ---
 
+## 🧠 Model Selection Rationale
+
+A key design decision in any GenAI system is choosing between **local models** and **cloud APIs**. This project deliberately uses **fully local inference** for all three model components. Here's why:
+
+### Text LLM — Ollama `llama3` (Local) vs OpenAI API
+
+| Criteria | Local (Ollama Llama 3) | Cloud (OpenAI GPT-4o) |
+|----------|----------------------|----------------------|
+| **Cost** | ✅ Completely free | ❌ Pay-per-token ($2.50–$10/1M tokens) |
+| **Privacy** | ✅ Data never leaves your machine | ❌ Queries sent to OpenAI servers |
+| **Latency** | ⚠️ Depends on local hardware (2–15s) | ✅ Fast (~1–3s) |
+| **Internet** | ✅ Works fully offline after setup | ❌ Requires constant internet |
+| **Quality** | ✅ Strong for RAG (grounded in context) | ✅ Slightly better reasoning |
+
+**Why we chose local:** For a RAG system, the LLM's job is relatively simple — it just needs to synthesize an answer from the retrieved context chunks, not reason from scratch. Llama 3 handles this excellently. Additionally, in enterprise or evaluation settings, **data privacy** is critical — queries about company policies or internal FAQs should never leave the local network. The architecture remains **swappable**: changing `OPENAI_BASE_URL` and `LLM_MODEL` in `.env` instantly switches to OpenAI if needed.
+
+### Vision LLM — Ollama `llava` (Local) vs Cloud Vision APIs
+
+| Criteria | Local (Ollama Llava) | Cloud (GPT-4o Vision / Google Vision) |
+|----------|---------------------|--------------------------------------|
+| **Cost** | ✅ Free | ❌ $5–$15 per 1K images |
+| **Privacy** | ✅ Images never leave the machine | ❌ Images uploaded to third-party servers |
+| **Flexibility** | ✅ Custom prompts for caption + tags | ⚠️ API-specific response formats |
+| **Setup** | ⚠️ Requires ~4GB model download | ✅ Just an API key |
+
+**Why we chose local:** Image data is inherently sensitive. Users may upload screenshots, documents, or personal photos. Processing them **entirely in RAM on the local machine** (with zero disk writes) ensures maximum privacy. Llava produces high-quality captions and is freely available through Ollama's ecosystem.
+
+### Embeddings — `all-MiniLM-L6-v2` (Local) vs OpenAI Embeddings API
+
+| Criteria | Local (MiniLM) | Cloud (OpenAI `text-embedding-3-small`) |
+|----------|---------------|----------------------------------------|
+| **Cost** | ✅ Free | ❌ $0.02 per 1M tokens |
+| **Speed** | ✅ ~5ms per query (cached) | ⚠️ Network round-trip (~100–300ms) |
+| **Size** | ✅ ~90MB model | N/A (cloud) |
+| **Quality** | ✅ Excellent for short document retrieval | ✅ Slightly higher dimensional |
+
+**Why we chose local:** Embedding happens on **every single query** the user sends. Using a cloud API would add latency to every interaction, create an internet dependency, and accumulate costs. The `all-MiniLM-L6-v2` model is specifically optimized for semantic similarity tasks, is only ~90MB, and runs in milliseconds on CPU. Combined with our **LRU cache**, repeated queries skip embedding entirely.
+
+### Summary
+
+> This project prioritizes **privacy, zero cost, and offline capability** while maintaining a clean architecture that allows **instant switching to cloud APIs** via environment variables — no code changes required.
+
+---
+
 ## 🏗 System Architecture
 
 ```
