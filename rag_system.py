@@ -20,7 +20,8 @@ class RAGSystem:
         self.init_db()
         self.client = OpenAI(
             base_url=os.getenv("OPENAI_BASE_URL"),
-            api_key=os.getenv("OPENAI_API_KEY", "ollama")
+            api_key=os.getenv("OPENAI_API_KEY", "ollama"),
+            timeout=float(os.getenv("LLM_TIMEOUT", 120.0))
         )
         self.llm_model = os.getenv("LLM_MODEL", "llama3")
         self.build_index_if_needed()

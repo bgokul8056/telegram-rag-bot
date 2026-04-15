@@ -9,7 +9,8 @@ class VisionSystem:
     def __init__(self):
         self.client = OpenAI(
             base_url=os.getenv("OPENAI_BASE_URL"),
-            api_key=os.getenv("OPENAI_API_KEY", "ollama")
+            api_key=os.getenv("OPENAI_API_KEY", "ollama"),
+            timeout=float(os.getenv("LLM_TIMEOUT", 120.0))
         )
         self.vision_model = os.getenv("VISION_MODEL", "llava")
 
