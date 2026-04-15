@@ -126,6 +126,27 @@ The bot will start polling inside the container. Press `Ctrl+C` to stop.
 
 ---
 
+## 🛡️ Security - Safety & Guardrails
+
+To prevent jailbreaking and malicious prompt injection, this bot implements a dedicated Safety Guard. This is currently a **work in progress** using a robust keyword-filtering approach.
+
+### Current Implementation
+The system scans incoming queries for the following forbidden phrases before they reach the LLM:
+- `ignore all`
+- `system prompt`
+- `administrator`
+- `bypass instructions`
+- `ignore your instructions`
+- `ignore previous`
+- `disregard everything`
+- `forget everything`
+- `new instructions`
+
+### Future Roadmap
+While current keyword matching is effective for common attacks, future iterations will focus on **Semantic Monitoring**. This involves using a secondary "safety model" to evaluate the intent/meaning of a query rather than just looking for exact words, providing even more resilient defense against evolving injection tactics.
+
+---
+
 ## 🧪 Testing
 
 ### Unit Tests (pytest)
