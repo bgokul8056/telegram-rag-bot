@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  bot:
+    build: .
+    container_name: telegram_rag_bot
+    restart: unless-stopped
+    volumes:
+      - ./data:/app/data
+      - ./vectors.db:/app/vectors.db
+    env_file:
+      - .env
+    # This allows the docker container to connect to localhost:11434 (Ollama)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

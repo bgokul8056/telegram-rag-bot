@@ -1,0 +1,58 @@
+# ============================
+# SECRETS - NEVER COMMIT THESE
+# ============================
+.env
+
+# ============================
+# Database files (generated at runtime)
+# ============================
+vectors.db
+
+# ============================
+# Python artifacts
+# ============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ============================
+# Virtual environments
+# ============================
+venv/
+env/
+.venv/
+
+# ============================
+# IDE files
+# ============================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ============================
+# OS files
+# ============================
+.DS_Store
+Thumbs.db
+
+# ============================
+# Docker artifacts
+# ============================
+docker-compose.override.yml
+
+# ============================
+# Temp files from image processing
+# ============================
+temp_*.jpg
+temp_*.png
+
+# ============================
+# Pytest cache
+# ============================
+.pytest_cache/
