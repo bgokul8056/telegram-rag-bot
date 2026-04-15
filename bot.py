@@ -70,7 +70,13 @@ async def ask(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.message.text
-    await respond_to_query(query, update)
+    greetings = ["hi", "hello", "hey", "hola", "greetings", "start"]
+    
+    # If the message is a simple greeting, show the welcome message and commands
+    if query.lower().strip() in greetings:
+        await start(update, context)
+    else:
+        await respond_to_query(query, update)
 
 async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Answers the /summarize command."""
