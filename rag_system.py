@@ -132,7 +132,11 @@ class RAGSystem:
 
     def ask(self, query: str, user_id: str = "guest") -> str:
         # Prompt Injection Guard
-        forbidden_phrases = ["ignore all", "system prompt", "administrator", "bypass instructions"]
+        forbidden_phrases = [
+            "ignore all", "system prompt", "administrator", "bypass instructions",
+            "ignore your instructions", "ignore previous", "disregard everything",
+            "forget everything", "new instructions"
+        ]
         if any(phrase in query.lower() for phrase in forbidden_phrases):
             return "Safety Guard Violation: I cannot fulfill this request as it triggers safety filters."
 
